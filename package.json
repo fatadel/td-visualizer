@@ -1,0 +1,15 @@
+{
+  "name": "td-visualizer",
+  "version": "1.0.0",
+  "description": "Visualize W3C Thing Descriptions.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@thing-description-playground/core": "^1.2.1",
+    "monaco-editor": "^0.34.0"
+  }
+}
