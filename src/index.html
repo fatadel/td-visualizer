@@ -24,8 +24,13 @@
                     <i class="bi-arrow-repeat" title="Force Update"></i>
                 </button>
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="https://www.w3.org/TR/wot-thing-description/" target="_blank">Thing Description</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://github.com/fatadel/td-visualizer" target="_blank">GitHub</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.w3.org/TR/wot-thing-description/" target="_blank">Thing
+                            Description</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/fatadel/td-visualizer" target="_blank">GitHub</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -55,7 +60,14 @@
         function visualize() {
             try {
                 document.getElementById('result').innerHTML = '';
-                d3.jsonldVis(JSON.parse(window.editor.getValue()), '#result');
+                d3.jsonldVis(
+                    JSON.parse(window.editor.getValue()),
+                    '#result',
+                    {
+                        maxLabelWidth: 150,
+                        scalingFactor: 20
+                    }
+                );
             } catch (_) { }
         }
 
@@ -65,10 +77,12 @@
         // Create globally-available editor field
         require(['vs/editor/editor.main'], async function () {
             window.editor = monaco.editor.create(document.getElementById('editor'), {
+                value: '' || decodeURIComponent(window.location.search.substring(3)),
                 language: 'json'
             });
 
             window.editor.getModel().onDidChangeContent(_ => {
+                window.history.replaceState(null, '', `?q=${encodeURIComponent(window.editor.getValue())}`)
                 visualize();
             });
 
@@ -79,6 +93,11 @@
                 fileMatch: [window.editor.getModel().uri.toString()],
                 schema: schemaJson
             });
+
+            if (window.editor.getValue().length > 0) {
+                window.editor.getAction('editor.action.formatDocument').run();
+                visualize();
+            }
         });
 
         document.getElementById('force-update').addEventListener('click', (_) => visualize());
