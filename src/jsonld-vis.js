@@ -41,7 +41,14 @@
 
     svg.call(tip);
 
-    var root = jsonldTree(jsonld);
+    var treeData = {
+      name: jsonld['title'] || `_${Math.random().toString(10).slice(-7)}`,
+      isIdNode: true,
+      isBlankNode: true,
+      children: jsonldTree(jsonld)
+    };
+
+    var root = treeData;
     root.x0 = h / 2;
     root.y0 = 0;
     root.children.forEach(collapse);
@@ -53,67 +60,46 @@
     }
 
     function jsonldTree(source) {
-      var tree = {};
+      const children = [];
 
-      if ('@id' in source) {
-        tree.isIdNode = true;
-        tree.name = source['@id'];
-        if (tree.name.length > maxLabelWidth / 9) {
-          tree.valueExtended = tree.name;
-          tree.name = '...' + tree.valueExtended.slice(-Math.floor(maxLabelWidth / 9));
-        }
-      } else {
-        tree.isIdNode = true;
-        tree.isBlankNode = true;
-        // random id, can replace with actual uuid generator if needed
-        tree.name = '_' + Math.random().toString(10).slice(-7);
-      }
-
-      var children = [];
-      Object.keys(source).forEach(function(key) {
+      Object.keys(source).forEach(key => {
         if (key === '@id' || key === '@context' || source[key] === null) return;
 
-        var valueExtended, value;
         if (typeof source[key] === 'object' && !Array.isArray(source[key])) {
-          children.push({
-            name: key,
-            children: [jsonldTree(source[key])]
-          });
+          children.push(
+            {
+              name: key,
+              children: jsonldTree(source[key])
+            }
+          );
         } else if (Array.isArray(source[key])) {
-          children.push({
-            name: key,
-            children: source[key].map(function(item) {
-              if (typeof item === 'object') {
-                return jsonldTree(item);
-              } else {
-                return { name: item };
-              }
-            })
-          });
+          children.push(
+            {
+              name: key,
+              children: source[key].map((e, i) => {
+                if (typeof e === 'object') {
+                  return { name: i, children: jsonldTree(e) };
+                } else {
+                  return { name: e };
+                }
+              })
+            }
+          );
         } else {
-          valueExtended = source[key];
-          value = valueExtended;
-          if (value.length > maxLabelWidth / 9) {
-            value = value.slice(0, Math.floor(maxLabelWidth / 9)) + '...';
-            children.push({
-              name: key,
-              value: value,
-              valueExtended: valueExtended
-            });
-          } else {
-            children.push({
-              name: key,
-              value: value
-            });
-          }
+          const d = (`${source[key]}`.length > maxLabelWidth / 9) ? {
+            name: key,
+            value: source[key].slice(0, Math.floor(maxLabelWidth / 9)) + '...',
+            valueExtended: source[key]
+          } : {
+            name: key,
+            value: source[key]
+          };
+
+          children.push(d);
         }
       });
 
-      if (children.length) {
-        tree.children = children;
-      }
-
-      return tree;
+      return children;
     }
 
     function update(source) {
