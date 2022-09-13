@@ -15,14 +15,18 @@
 
 <body>
     <nav class="navbar navbar-light navbar-expand-md shadow-sm py-1 px-5">
-        <div class="container-fluid"><a class="navbar-brand d-flex align-items-center" href="#"><span>TD
-                    Visualizer</span></a><button data-bs-toggle="collapse" class="navbar-toggler"
-                data-bs-target="#navcol-2"><span class="visually-hidden">Toggle navigation</span><span
-                    class="navbar-toggler-icon"></span></button>
+        <div class="container-fluid justify-content-start">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <span>TD Visualizer</span>
+            </a>
+            <button id="force-update" class="btn" type="button">
+                <i class="bi bi-arrow-repeat" title="Force Update"></i>
+            </button>
+            <button data-bs-toggle="collapse" class="navbar-toggler ms-auto" data-bs-target="#navcol-2">
+                <span class="visually-hidden">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navcol-2">
-                <button id="force-update" class="btn" type="button">
-                    <i class="bi-arrow-repeat" title="Force Update"></i>
-                </button>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="https://www.w3.org/TR/wot-thing-description/" target="_blank">Thing
