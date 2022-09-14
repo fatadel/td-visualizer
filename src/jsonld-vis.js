@@ -51,7 +51,7 @@
     var root = treeData;
     root.x0 = h / 2;
     root.y0 = 0;
-    root.children.forEach(collapse);
+    root.children.forEach((child) => collapse(child));
 
     function changeSVGWidth(newWidth) {
       if (w !== newWidth) {
@@ -258,15 +258,34 @@
       }
     }
 
-    function collapse(d) {
+    function collapse(d, toUpdate = false) {
       if (d.children) {
         d._children = d.children;
-        d._children.forEach(collapse);
+        d._children.forEach((child) => collapse(child));
         d.children = null;
+
+        if (toUpdate) {
+          update(d);
+        }
       }
     }
 
+    function expand(d, toUpdate = false) {
+      if (d._children) {
+        d.children = d._children;
+        d.children.forEach((child) => expand(child));
+        d._children = null;
+      } else if (d.children) {
+        d.children.forEach((child) => expand(child));
+      }
+
+      if (toUpdate) update(d);
+    }
+
     update(root);
+
+    document.getElementById('collapse-all').addEventListener('click', (_) => collapse(root, true));
+    document.getElementById('expand-all').addEventListener('click', (_) => expand(root, true));
   }
 
   if (typeof module !== 'undefined' && module.exports) {

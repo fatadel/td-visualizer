@@ -38,12 +38,12 @@ svg {
   height: 50vh;
 }
 
-#force-update {
+.custom-btn {
   border: none;
   color: DodgerBlue;
 }
 
-#force-update:hover {
+.custom-btn:hover {
   color: RoyalBlue;
 }
 
