@@ -43,7 +43,7 @@ svg {
   color: DodgerBlue;
 }
 
-.custom-btn:hover {
+.custom-btn:hover, .custom-btn:active, .custom-btn:focus {
   color: RoyalBlue;
 }
 
